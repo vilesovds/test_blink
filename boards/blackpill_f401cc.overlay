@@ -1,0 +1,58 @@
+/ {
+
+	leds {
+		compatible = "gpio-leds";
+		led_B_7: led_b7 {
+			gpios = <&gpiob 7 GPIO_ACTIVE_HIGH>;
+			label = "User LED0";
+		};
+		led_B_8: led_b8 {
+			gpios = <&gpiob 8 GPIO_ACTIVE_HIGH>;
+			label = "User LED1";
+		};
+	};
+
+	pwmleds: pwmleds {
+		compatible = "pwm-leds";
+		status = "okay";
+
+		green_pwm_led: green_pwm_led {
+			pwms = <&pwm4 1 PWM_NSEC(100000) PWM_POLARITY_NORMAL>;
+		};
+	};
+
+    aliases {
+        pwm-led2 = &green_pwm_led;
+		led0 = &led_B_7;
+		led1 = &led_B_8;
+    };
+
+};
+
+&timers4 {
+	status = "okay";
+	/* if need period im MS
+	st,prescaler = <10000>;
+	*/
+	pwm4: pwm {
+		status = "okay";
+		pinctrl-0 = <&tim4_ch1_pb6 &tim4_ch2_pb7>;
+		pinctrl-names = "default";
+	};
+};
+
+&pwm4 {
+	status = "okay";
+};
+
+/ {
+	chosen {
+		zephyr,console = &cdc_acm_uart0;
+	};
+};
+
+&zephyr_udc0 {
+	cdc_acm_uart0: cdc_acm_uart0 {
+		compatible = "zephyr,cdc-acm-uart";
+	};
+};
