@@ -23,4 +23,5 @@ typedef struct
 
 
 parser_data_t ParseLine(const char * line);
+/* used to debugging */
 const char * CommandToString(enum supported_command cmd);
