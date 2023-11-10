@@ -113,6 +113,7 @@ void task1_blink(const struct gpio_dt_spec * gpio, struct k_fifo * fifo, struct 
 		}
 		if (enable) {
 			if (sub) {
+				/* By the way, we can simply check the status of another GPIO */
 				uint32_t sem = k_sem_count_get(sub);
 				if ( sem == 0) {					
 					led_mask = 0;
@@ -141,7 +142,7 @@ void task1_blink(const struct gpio_dt_spec * gpio, struct k_fifo * fifo, struct 
 
 void pwm_blink(struct k_fifo * fifo)
 {
-	uint32_t pulse_width = 0U;
+	uint32_t pulse_width = 0;
 	size_t period = 500;
 	uint8_t dir = 1;
 	uint32_t brightness = 50;
@@ -297,6 +298,7 @@ static void process_input(const char * input)
 	if (notify_mask & (1 << 2)) {
 		send_notification(&tasks_data[2], &blink3_fifo);
 	}
+	/*using notify_mask as a flag if we have the wrong command*/
 	if (0 == notify_mask)
 	{
 		printk("Unknown command\n");
@@ -343,7 +345,7 @@ int main(void)
 	while (1) {
 		process_input(console_getline());
 	}
-
+	/* This code should not be executed. */
 	k_thread_join(tid1, K_NO_WAIT);
 	k_thread_join(tid2, K_NO_WAIT);
 	k_thread_join(tid3, K_NO_WAIT);
